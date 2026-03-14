@@ -11,21 +11,12 @@ Uses the open [Agent Skills](https://agentskills.io) standard. Works with Claude
 
 ## Prerequisites
 
-This skill requires two command-line tools installed on your system:
+This skill uses two command-line tools:
 
 - **[yt-dlp](https://github.com/yt-dlp/yt-dlp)** — YouTube video downloader
 - **[ffmpeg](https://ffmpeg.org/)** — Required to merge video and audio streams
 
-```bash
-# macOS
-brew install yt-dlp ffmpeg
-
-# Linux
-pip install -U yt-dlp && sudo apt install ffmpeg
-
-# Windows
-pip install -U yt-dlp && choco install ffmpeg
-```
+The skill **auto-detects missing tools and offers to install them** with your permission. No manual setup needed.
 
 ## Installation
 

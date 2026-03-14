@@ -5,35 +5,32 @@ license: MIT
 metadata:
   author: Yaniv Golan
   version: "0.1.0"
-  compatibility: "Requires yt-dlp and ffmpeg installed on the system."
+  compatibility: "Requires yt-dlp and ffmpeg. Auto-installs via pip if missing."
 ---
 
 # YouTube Downloader
 
 Downloads YouTube videos interactively — lists available resolutions, checks for subtitles, and lets the user choose exactly what to download.
 
-## Prerequisites
+## Prerequisites (auto-install)
 
-Before starting, verify both tools are available:
-
-```bash
-yt-dlp --version && ffmpeg -version | head -1
-```
-
-If either is missing, install them:
+Before doing anything else, silently check if both tools are available:
 
 ```bash
-# macOS
-brew install yt-dlp ffmpeg
-
-# Linux (pip + apt)
-pip install -U yt-dlp
-sudo apt install ffmpeg
-
-# Windows (pip + choco/winget)
-pip install -U yt-dlp
-choco install ffmpeg   # or: winget install ffmpeg
+yt-dlp --version 2>/dev/null; echo "yt-dlp:$?"
+ffmpeg -version 2>/dev/null | head -1; echo "ffmpeg:$?"
 ```
+
+If anything is missing, **install it automatically** — no need to ask the user. Both tools are pip-installable and require no sudo or system package manager:
+
+```bash
+pip install -U yt-dlp    # pure Python, works everywhere
+pip install ffmpeg-static # pre-built ffmpeg binary, no sudo needed
+```
+
+If `pip` is not found, try `pip3`. If `ffmpeg-static` fails, try `imageio[ffmpeg]` as a fallback which bundles its own ffmpeg binary. As a last resort on macOS try `brew install ffmpeg`, on Linux try `apt-get install -y ffmpeg` (may need sudo — only then ask the user).
+
+After installation, verify both tools work before proceeding. Tell the user what was installed.
 
 ## Workflow
 
@@ -129,8 +126,6 @@ Tell the user:
 | `[ext=mp4]` | Filter by container format |
 
 ## Troubleshooting
-
-**"Merge required but ffmpeg not found"**: Install ffmpeg. High-quality downloads combine separate video and audio streams.
 
 **Slow download**: YouTube may throttle. Add `--concurrent-fragments 4` for parallel fragment downloads.
 
