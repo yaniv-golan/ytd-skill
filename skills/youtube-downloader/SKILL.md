@@ -4,7 +4,7 @@ description: "Download YouTube videos with interactive resolution and subtitle s
 license: MIT
 metadata:
   author: Yaniv Golan
-  version: "0.1.0"
+  version: "0.2.0"
   compatibility: "Requires yt-dlp and ffmpeg. Auto-installs via pip if missing."
 ---
 
@@ -125,10 +125,57 @@ Tell the user:
 | `[height<=720]` | Filter by max resolution |
 | `[ext=mp4]` | Filter by container format |
 
+## Authentication via Browser (for restricted videos)
+
+Some videos require authentication: age-restricted, private, or members-only content. When yt-dlp reports an error like "Sign in to confirm your age", "Private video", or "Join this channel to get access", use this workflow:
+
+### On desktop (Claude Code, Cursor)
+
+Add `--cookies-from-browser chrome` (or `firefox`, `edge`, `safari`) to the yt-dlp command. This reads cookies from the user's local browser profile. The user must be logged into YouTube in that browser.
+
+### In sandboxed environments (Cowork, cloud)
+
+There's no local browser profile, so use Playwright to get cookies:
+
+1. Launch a browser and navigate to YouTube:
+   ```
+   Use browser_navigate to go to https://accounts.google.com
+   ```
+
+2. Tell the user to log in. Wait for them to complete the Google login flow — use `browser_snapshot` to check if they've reached the YouTube homepage or their Google account page.
+
+3. Once logged in, extract cookies:
+   ```
+   Use browser_evaluate to run: JSON.stringify(await (async () => {
+     const cookies = document.cookie.split('; ').map(c => {
+       const [name, ...rest] = c.split('=');
+       return { name, value: rest.join('='), domain: '.youtube.com' };
+     });
+     return cookies;
+   })())
+   ```
+
+   **Better approach** — if the Playwright MCP exposes a cookies API, use that directly to get all cookies for `.youtube.com` and `.google.com` domains.
+
+4. Write cookies to a Netscape cookie file:
+   ```
+   # Netscape cookie file format (one line per cookie):
+   # domain\tinclude_subdomains\tpath\tsecure\texpiry\tname\tvalue
+   .youtube.com	TRUE	/	TRUE	0	COOKIE_NAME	COOKIE_VALUE
+   ```
+
+   Save to a temporary file, e.g., `/tmp/yt-cookies.txt`.
+
+5. Retry the yt-dlp command with `--cookies /tmp/yt-cookies.txt`.
+
+6. Clean up the cookie file after download completes.
+
+### What authentication CANNOT fix
+
+**DRM-protected content** (rented/purchased movies, YouTube Premium originals) cannot be downloaded even with authentication. The video stream is encrypted. If yt-dlp reports a DRM error, inform the user that this content is not downloadable.
+
 ## Troubleshooting
 
 **Slow download**: YouTube may throttle. Add `--concurrent-fragments 4` for parallel fragment downloads.
-
-**Age-restricted video**: Add `--cookies-from-browser chrome` (or firefox/edge) to use browser cookies for authentication.
 
 **Geo-restricted video**: Requires a VPN or proxy. Use `--proxy URL` if the user provides one.

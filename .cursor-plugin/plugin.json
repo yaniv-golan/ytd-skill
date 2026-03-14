@@ -1,7 +1,7 @@
 {
   "name": "youtube-downloader",
   "displayName": "YouTube Downloader",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Download YouTube videos with interactive resolution and subtitle selection",
   "author": {
     "name": "Yaniv Golan",
