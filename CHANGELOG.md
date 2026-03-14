@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-03-14
+
+### Added
+
+- JavaScript runtime (nodejs/deno) auto-install for better format detection
+- Confirmation step before download showing selections and full command
+- Error handling table — parses yt-dlp errors and gives actionable advice instead of raw output
+
 ## [0.2.0] - 2026-03-14
 
 ### Added

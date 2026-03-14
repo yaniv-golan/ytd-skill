@@ -4,7 +4,7 @@ description: "Download YouTube videos with interactive resolution and subtitle s
 license: MIT
 metadata:
   author: Yaniv Golan
-  version: "0.2.0"
+  version: "0.3.0"
   compatibility: "Requires yt-dlp and ffmpeg. Auto-installs via pip if missing."
 ---
 
@@ -30,7 +30,13 @@ pip install ffmpeg-static # pre-built ffmpeg binary, no sudo needed
 
 If `pip` is not found, try `pip3`. If `ffmpeg-static` fails, try `imageio[ffmpeg]` as a fallback which bundles its own ffmpeg binary. As a last resort on macOS try `brew install ffmpeg`, on Linux try `apt-get install -y ffmpeg` (may need sudo — only then ask the user).
 
-After installation, verify both tools work before proceeding. Tell the user what was installed.
+Also check for a JavaScript runtime — yt-dlp uses it for some format detection:
+```bash
+node --version 2>/dev/null || deno --version 2>/dev/null
+```
+If missing, install one silently: `apt-get install -y nodejs 2>/dev/null || brew install node 2>/dev/null`. This is optional — yt-dlp works without it but may warn or miss some formats.
+
+After installation, verify all tools work before proceeding. Tell the user what was installed.
 
 ## Workflow
 
@@ -77,7 +83,14 @@ Use AskUserQuestion to let the user choose:
 
 If the user's preferred language is only available as auto-generated, inform them and ask if that's acceptable.
 
-### Step 3: Build and run the download command
+### Step 3: Confirm and download
+
+Before downloading, show the user a summary of their selections:
+- Video format and resolution
+- Subtitle choice (if any)
+- The full yt-dlp command that will be run
+
+Use AskUserQuestion to confirm: "Start download?" with options "Yes (Recommended)" and "Change settings".
 
 Construct the `yt-dlp` command based on user choices. Use these format selectors:
 
@@ -173,6 +186,24 @@ There's no local browser profile, so use Playwright to get cookies:
 ### What authentication CANNOT fix
 
 **DRM-protected content** (rented/purchased movies, YouTube Premium originals) cannot be downloaded even with authentication. The video stream is encrypted. If yt-dlp reports a DRM error, inform the user that this content is not downloadable.
+
+## Error Handling
+
+When yt-dlp fails, parse its stderr and respond with actionable advice:
+
+| Error pattern | Meaning | Action |
+|--------------|---------|--------|
+| `Sign in to confirm` / `not a bot` | Bot detection | Trigger the browser auth workflow above |
+| `Private video` | Video is private | Trigger browser auth; if already authenticated, tell user they lack access |
+| `Join this channel` | Members-only | Trigger browser auth; user must be a channel member |
+| `Video unavailable` | Deleted or removed | Inform user, nothing can be done |
+| `is not available in your country` | Geo-restricted | Suggest VPN or `--proxy URL` |
+| `DRM` / `cannot decrypt` | DRM-protected | Tell user this content cannot be downloaded — the stream is encrypted |
+| `Requested format not available` | Format mismatch | Fall back to `-f "bv*+ba/b"` and inform user |
+| `ffmpeg not found` | Missing ffmpeg | Run the prerequisite install step |
+| `WARNING: Unable to extract.*nsig` / `JS player` | Missing JS runtime | Install nodejs and retry |
+
+Do not show raw yt-dlp error output to the user. Translate it into a clear message with a next step.
 
 ## Troubleshooting
 
