@@ -1,0 +1,7 @@
+interface:
+  display_name: "YouTube Downloader"
+  short_description: "Download YouTube videos with resolution and subtitle selection"
+  brand_color: "#FF0000"
+
+policy:
+  allow_implicit_invocation: true

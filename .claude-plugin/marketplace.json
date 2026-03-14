@@ -1,0 +1,19 @@
+{
+  "name": "youtube-downloader-marketplace",
+  "owner": {
+    "name": "Yaniv Golan",
+    "email": "yaniv@golan.name"
+  },
+  "metadata": {
+    "description": "YouTube video downloader skill with interactive format selection"
+  },
+  "plugins": [
+    {
+      "name": "youtube-downloader",
+      "source": "./",
+      "description": "Download YouTube videos with interactive resolution and subtitle selection",
+      "category": "productivity",
+      "tags": ["youtube", "video", "download", "subtitles"]
+    }
+  ]
+}

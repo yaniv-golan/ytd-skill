@@ -1,0 +1,13 @@
+{
+  "name": "youtube-downloader",
+  "version": "0.1.0",
+  "description": "Download YouTube videos with interactive resolution and subtitle selection",
+  "author": {
+    "name": "Yaniv Golan",
+    "email": "yaniv@golan.name"
+  },
+  "repository": "https://github.com/yaniv-golan/ytd-skill",
+  "license": "MIT",
+  "keywords": ["youtube", "video", "download", "yt-dlp", "subtitles", "srt"],
+  "skills": "./skills"
+}
