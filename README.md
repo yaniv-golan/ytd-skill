@@ -7,7 +7,9 @@
 
 An AI agent skill for downloading YouTube videos with interactive resolution and subtitle selection. Lists available formats, checks for subtitles, and lets you choose exactly what to download.
 
-Uses the open [Agent Skills](https://agentskills.io) standard. Works with Claude, ChatGPT, Codex CLI, Cursor, Windsurf, Manus, and any other compatible tool.
+Uses the open [Agent Skills](https://agentskills.io) standard. Works with Claude, Codex CLI, Cursor, Windsurf, Manus, and any other compatible tool.
+
+> **Note: ChatGPT is not supported.** ChatGPT's code execution sandbox (used by Skills to run scripts) does not have outbound internet access. The sandbox runs in an isolated container with networking locked down — scripts cannot make external connections. Since this skill needs to reach YouTube's servers to list formats and download videos, it cannot function in ChatGPT's environment. This is a platform limitation, not a bug in the skill.
 
 ## Prerequisites
 
@@ -44,12 +46,6 @@ The skill **auto-detects missing tools and offers to install them** with your pe
 2. Go to **Settings** -> **Skills**
 3. Click **+ Add** -> **Upload**
 4. Upload the zip
-
-### ChatGPT
-
-1. Download [`youtube-downloader.zip`](https://github.com/yaniv-golan/ytd-skill/releases/latest/download/youtube-downloader.zip)
-2. Go to **Settings** -> **Skills** -> **New Skill** -> **Upload from your Computer**
-3. Upload the zip
 
 ### Codex CLI
 

@@ -31,10 +31,9 @@ skills/youtube-downloader/
 - Upload at Settings -> Skills -> + Add -> Upload
 - The zip contains a flat `youtube-downloader/` folder
 
-### ChatGPT — same zip as Manus
+### ChatGPT — NOT SUPPORTED
 
-- Download same `youtube-downloader.zip` from GitHub Releases
-- Upload at Settings -> Skills -> New Skill -> Upload from your Computer
+ChatGPT's code execution sandbox does not have outbound internet access. Scripts run in an isolated container with networking locked down, so yt-dlp cannot reach YouTube's servers. This is a platform limitation.
 
 ### Codex CLI — install from repo or zip
 
